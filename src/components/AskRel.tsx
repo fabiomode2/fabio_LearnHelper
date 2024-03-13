@@ -72,7 +72,7 @@ export const AskRel = ({ data, max_options }: Props) => {
       <div className="row align-items-center justify-content-center p-5">
         {CurrentQuestion?.opciones.map((value) => {
           return (
-            <div className="row align-items-center justify-content-center">
+            <div className="row align-items-center justify-content-center" key={value}>
               <button
                 type="button"
                 className="btn btn-info w-25 fs-4 m-4"
@@ -86,7 +86,7 @@ export const AskRel = ({ data, max_options }: Props) => {
         })}
       </div>
 
-      {alreadyResponded ? (
+      {alreadyResponded && (
         <>
           <h3>{finalMessage}</h3>
           <div className="row align-items-center justify-content-center p-5">
@@ -99,9 +99,8 @@ export const AskRel = ({ data, max_options }: Props) => {
             </button>
           </div>
         </>
-      ) : (
-        <></>
-      )}
+      )
+      }
     </div>
   );
 };

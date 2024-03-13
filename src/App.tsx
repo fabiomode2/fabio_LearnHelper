@@ -13,10 +13,10 @@ import AskRel from "./components/AskRel";
 //top peores codigos ever written
 
 function App() {
-  // const [AllData, changeAllData] = useState<DataCard[]>([]);
+  const [AllData, changeAllData] = useState<DataCard[]>([]);
 
-  let data: DataCard[] = [];
-
+  localStorage.clear()
+  
   const [MainTabVisibility, changeMainTabVisibility] = useState(true);
 
   const [createFormVisibility, changeFormVisibility] = useState(false);
@@ -33,30 +33,43 @@ function App() {
     changeAskRelVisibility,
   ];
   //Implementacion de una relation para testeo mientras no implemento el almacenamiento de datos en el navegador
-  let dc: DataCard = {
-    name: "Numeros en Ingles",
-    data: [
-      { exp: "one", men: "1" },
-      { exp: "two", men: "2" },
-      { exp: "three", men: "3" },
-      { exp: "four", men: "4" },
-      { exp: "five", men: "5" },
-      { exp: "six", men: "6" },
-      { exp: "seven", men: "7" },
-      { exp: "eight", men: "8" },
-      { exp: "nine", men: "9" },
-      { exp: "ten", men: "10" },
-    ],
-    type: "relation",
-  };
-  data = [dc];
+  // let dc: DataCard = {
+  //   name: "Numeros en Ingles",
+  //   data: [
+  //     { exp: "one", men: "1" },
+  //     { exp: "two", men: "2" },
+  //     { exp: "three", men: "3" },
+  //     { exp: "four", men: "4" },
+  //     { exp: "five", men: "5" },
+  //     { exp: "six", men: "6" },
+  //     { exp: "seven", men: "7" },
+  //     { exp: "eight", men: "8" },
+  //     { exp: "nine", men: "9" },
+  //     { exp: "ten", men: "10" },
+  //   ],
+  //   type: "relation",
+  // };
+
+  
+  if (localStorage.getItem("data") != null)
+  {changeAllData(JSON.parse(localStorage.getItem("data")!))
+  }
+  // else {
+  //   changeAllData([dc])
+  // }
+
+
 
   const StoredClicked = (type: string, data: DataCard) => {
     if (type == "relation") {
       changeMainTabVisibility(false);
       secondarys.map((item) => item(false));
-
-      changeAskRelC(<AskRel data={data} max_options={4} />);
+      //
+      //
+      //
+      //
+      //
+      changeAskRelC(<AskRel data={data} max_options={3} key={"unique"}/>);
       changeAskRelVisibility(true);
     }
   };
@@ -77,14 +90,21 @@ function App() {
         name = item.expression;
       }
     });
-    //Add the data to de "database"
-    // let variable: DataCard = {
-    //   name: name,
-    //   data: dataFormated,
-    // };
+    // Add the data to de "database"
+    let variable: DataCard = {
+      name: name,
+      data: dataFormated,
+      type: "relation"
+    };
+    
+    //Add input data to saved
+    let temp = AllData
+    temp.push(variable)
+    changeAllData(temp)
 
-    // changeAllData([variable]);
-    localStorage.setItem("data", JSON.stringify(data));
+
+    localStorage.setItem("data", JSON.stringify(AllData));
+    console.log("data: ", localStorage.getItem("data"))
   };
 
   const Manager = (type: string) => {
@@ -115,14 +135,15 @@ function App() {
           <h1 className="p-5">Learn Helper</h1>
           <CreateRow somethingCreated={Manager} />
           <hr />
-          {data.map((item, index) => (
+          {AllData.map((item, index) => (
+            
             <SmallCard
-              key={index}
-              title={item.name}
-              onClick={StoredClicked}
-              data={item}
-              type={item.type}
-            />
+            key={index}
+            title={item.name}
+            onClick={StoredClicked}
+            data={item}
+            type={item.type}
+          />
           ))}
         </Page>
         <Page visible={createFormVisibility}>
