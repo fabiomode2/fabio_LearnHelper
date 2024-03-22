@@ -18,6 +18,8 @@ const GetRandomItem = (lista: SimpleRelation[]) => {
 };
 
 export const AskRel = ({ data, max_options }: Props) => {
+
+
   const [CurrentQuestion, changeCurrentQuestion] = useState<question>();
   const [alreadyResponded, changeAlreadyResponded] = useState(true);
   const [finalMessage, changeFinalMessage] = useState("Get Asked");
@@ -28,21 +30,46 @@ export const AskRel = ({ data, max_options }: Props) => {
   };
 
   const GetQuestion = () => {
-    const item = GetRandomItem(data.data);
-    let answers = [item.men];
+
+    let item: SimpleRelation = GetRandomItem(data.data);
+    let answers = [];
+    
+    //While loop to avoid asking the data's name as a question. 
+    while (true){
+      item = GetRandomItem(data.data);
+      if (item.exp != item.men) {
+
+        answers = [item.men];
+        break
+      }
+    }
+    //Prevent infinite loop
+    let number_of_iterations = 0;
+    //Get other meanings to confuse the user
     while (true) {
       let i = GetRandomItem(data.data);
-      if (!(answers.indexOf(i.men) > -1)) {
+      //Check if answer is already there 
+      if ((!(answers.indexOf(i.men) > -1)) && (i.men != i.exp)) {
         answers.push(i.men);
-        if (
-          answers.length >= max_options ||
-          answers.length == data.data.length
-        ) {
-          break;
+      }
+      else{
+        number_of_iterations = number_of_iterations + 1;
+        console.log("try n", number_of_iterations)
+        if (number_of_iterations >= 20){
+          answers.push(i.men);
         }
+      }
+      //Break Condition
+      if (
+        //Check if we have enough questions
+        answers.length >= max_options ||
+        answers.length == data.data.length
+      ) {
+        break;
       }
     }
 
+    //Shuffle the answers and prepare question
     answers = ShuffleList(answers);
     const resultado: question = {
       pregunta: `Qué significa ${item.exp}?`,
@@ -70,14 +97,15 @@ export const AskRel = ({ data, max_options }: Props) => {
         <h5>{CurrentQuestion?.pregunta}</h5>
       </div>
       <div className="row align-items-center justify-content-center p-5">
-        {CurrentQuestion?.opciones.map((value) => {
+        {CurrentQuestion?.opciones.map((value, index) => {
           return (
-            <div className="row align-items-center justify-content-center">
+            <div className="row align-items-center justify-content-center" key={value}>
               <button
-                type="button"
-                className="btn btn-info w-25 fs-4 m-4"
+                type="button" 
+                className="btn btn-outline-info w-25 fs-4 m-4" 
                 onClick={() => Answer(value)}
-                key={value}
+                key={index}
+                role="button"
               >
                 {value}
               </button>
@@ -86,7 +114,7 @@ export const AskRel = ({ data, max_options }: Props) => {
         })}
       </div>
 
-      {alreadyResponded ? (
+      {alreadyResponded && (
         <>
           <h3>{finalMessage}</h3>
           <div className="row align-items-center justify-content-center p-5">
@@ -99,9 +127,8 @@ export const AskRel = ({ data, max_options }: Props) => {
             </button>
           </div>
         </>
-      ) : (
-        <></>
-      )}
+      )
+      }
     </div>
   );
 };

@@ -11,7 +11,7 @@ export const SmallCard = ({ title, onClick, data, type }: Props) => {
   //style="width: 18rem;"
   return (
     <>
-      <div className="card w-25">
+      <div className="card m-2">
         <div className="card-body">
           <h4 className="card-title">{title}</h4>
           <button

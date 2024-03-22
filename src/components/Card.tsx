@@ -8,7 +8,7 @@ interface Props {
 export const Card = ({ title, img, text, onClick }: Props) => {
   return (
     <>
-      <div className={"card col m-2 "}>
+      <div className="card col m-2 ">
         <img
           src={img}
           className="card-img-top rounded w-25 align-self-center "

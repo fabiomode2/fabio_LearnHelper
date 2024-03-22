@@ -23,10 +23,12 @@ export const NewRel = ({ onDone }: Props) => {
   };
 
   const inputChanged = (expression: string, meaning: string, kkey: number) => {
+
+    if (expression == meaning) return
     //Declare recieved data
     let variable: Relation = {
-      key: kkey,
       expression: expression,
+      key: kkey,
       meaning: meaning,
     };
     //Se if its new relation or modification
@@ -35,9 +37,10 @@ export const NewRel = ({ onDone }: Props) => {
       if (item.key == variable.key) {
         already = true;
       }
-      if (!item.expression || !item.meaning) {
+      if ((!item.expression || !item.meaning)) {
         delete relData[index];
       }
+  
     });
     //Append new or modify an existing one
     if (already) {
@@ -68,7 +71,7 @@ export const NewRel = ({ onDone }: Props) => {
     }
     //Send data
     setErrorValue("");
-    inputChanged(name, name, -1);
+    relData.push({key: -1, expression: name, meaning: name});
     onDone(relData);
     console.log("Datos enviados:", relData);
     return;
